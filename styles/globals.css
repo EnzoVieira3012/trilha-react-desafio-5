@@ -1,17 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@tailwind variants;
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-primary);
+:root {
+  --bg-color: white;
+  --text-color: black;
+}
+
+.dark {
+  --bg-color: #111827;
+  --text-color: white;
 }
 
 body {
-  font-family: var(--font-secondary);
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }

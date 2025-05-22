@@ -1,59 +1,35 @@
-import classNames from 'classnames';
-import { useEffect } from 'react';
-import styles from './Layout.module.css';
-
-export function GradientBackground({ variant, className }) {
-  const classes = classNames(
-    {
-      [styles.colorBackground]: variant === 'large',
-      [styles.colorBackgroundBottom]: variant === 'small',
-    },
-    className
-  );
-
-  return <div className={classes} />;
-}
+import { useState, useEffect } from 'react';
+import Header from './Header';
+import Footer from './Footer';
 
 export default function Layout({ children }) {
-  const setAppTheme = () => {
-    const darkMode = localStorage.getItem('theme') === 'dark';
-    const lightMode = localStorage.getItem('theme') === 'light';
-
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else if (lightMode) {
-      document.documentElement.classList.remove('dark');
-    }
-    return;
-  };
-
-  const handleSystemThemeChange = () => {
-    var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    darkQuery.onchange = (e) => {
-      if (e.matches) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      }
-    };
-  };
+  const [theme, setTheme] = useState('light');
 
   useEffect(() => {
-    setAppTheme();
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+    document.documentElement.classList.add(savedTheme);
   }, []);
 
-  useEffect(() => {
-    handleSystemThemeChange();
-  }, []);
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.classList.remove(theme);
+    document.documentElement.classList.add(newTheme);
+  };
 
   return (
-    <div className="relative pb-24 overflow-hidden">
-      <div className="flex flex-col items-center max-w-2xl w-full mx-auto">
-        {children}
-      </div>
+    <div className="flex flex-col min-h-screen">
+      <Header name="Meu Blog" />
+      <button
+        onClick={toggleTheme}
+        className="p-2 self-end mr-4 mt-4 rounded bg-gray-200 dark:bg-gray-800"
+      >
+        Mudar para {theme === 'light' ? 'Escuro' : 'Claro'}
+      </button>
+      <main className="flex-1 p-4">{children}</main>
+      <Footer />
     </div>
   );
 }
